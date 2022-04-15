@@ -94,6 +94,8 @@
             <v-select
               v-model="selectedGoal"
               :items="goals"
+              item-text="name"
+              item-value="id"
               label="Select your goal"
               dense
               outlined
@@ -207,7 +209,7 @@ export default {
     },
     selectedEventId: {
       type: Number,
-      default: -1,
+      required: true
     },
   },
   data() {
@@ -230,12 +232,8 @@ export default {
       currentEventData: 'getCurrentBrdEvent',
     }),
   },
-  async mounted() {
-    this.$store.dispatch('fetchSingleBroadcastEvent', this.selectedEventId)
-    console.log(await this.currentEventData)
-    this.name = await this.currentEventData.name
-    this.description = await this.currentEventData.details
-    this.start = await this.currentEventData.schedule_time
+  mounted() {
+    this.$store.dispatch('fetchSingleBroadcastEvent', this.selectedEventId).then(() => this.assignValues())
   },
   methods: {
     async deleteEvent(e) {
@@ -250,6 +248,14 @@ export default {
     },
     handleSelectedCohort(cohortId) {
       this.selectedCohortId = cohortId
+    },
+    assignValues(){
+      this.name = this.currentEventData.name
+      this.description = this.currentEventData.content
+      this.start = this.currentEventData.start
+      this.selectedGoal = this.currentEventData.goal
+      this.selectedTemplateId = this.currentEventData.template ? this.currentEventData.template.id : null
+      this.selectedCohortId = this.currentEventData.cohort ? this.currentEventData.cohort.id : null
     },
     updateEvent() {
       console.log(

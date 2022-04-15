@@ -236,8 +236,8 @@ export default {
           content: this.description,
           goal: this.selectedGoal,
           color: this.color,
-          user_cohort: selectedCohortId,
-          template: selectedTemplateId,
+          user_cohort: this.selectedCohortId,
+          template: this.selectedTemplateId,
           schedule_time: this.start,
         }
 
@@ -251,9 +251,9 @@ export default {
             this.end = ''
             this.color = ''
             this.time = ''
-            this.goals = ''
+            this.selectedGoal = ''
             this.$emit('getBroadcastEvents')
-            $emit('toggleDialog')
+            this.$emit('toggleDialog')
           })
           .catch((err) => {
             console.log(err)
