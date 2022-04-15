@@ -224,7 +224,7 @@ const actions = {
         url: `${process.env.baseUrl}/core/broadcast-event/update/${eventId}/`,
         method: 'GET',
       })
-        .then(() => {
+        .then((response) => {
           commit('FETCH_SINGLE_BROADCAST_EVENT', response.data)
           resolve(response.data)
         })

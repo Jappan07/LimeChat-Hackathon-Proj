@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import OverallReportTable from '../components/analytics/OverallReportTable.vue'
-import AnalyticsChartList from '../components/analytics/AnalyticsChartList.vue'
+import OverallReportTable from '../../components/analytics/OverallReportTable.vue'
+import AnalyticsChartList from '../../components/analytics/AnalyticsChartList.vue'
 export default {
   components: { OverallReportTable, AnalyticsChartList },
   name: 'IndexPage',

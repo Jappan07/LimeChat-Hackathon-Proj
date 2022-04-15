@@ -21,14 +21,14 @@
       multi-sort
       class="elevation-1"
     >
-    <template v-slot:item.color="{ item }">
-      <v-chip
-        :color="item.color"
-        dark
-      >
-        {{ item.color }}
-      </v-chip>
-    </template>
+      <template v-slot:item.actions="{ item }">
+        <v-btn small depressed outlined color="primary" class="mr-2" @click="viewDetail(item.id)"> View Detail </v-btn>
+      </template>
+      <template v-slot:item.color="{ item }">
+        <v-chip :color="item.color" dark>
+          {{ item.color }}
+        </v-chip>
+      </template>
     </v-data-table>
   </v-card>
 </template>
@@ -52,10 +52,7 @@ export default {
         { text: 'Template', value: 'template.short_code' },
         { text: 'User Cohort', value: 'user_cohort.name' },
         { text: 'Total Messages', value: 'total_messages' },
-        { text: 'Scheduled Messages', value: 'scheduled_messages' },
-        { text: 'Sent Messages', value: 'sent_messages' },
-        { text: 'Read Messages', value: 'read_messages' },
-        { text: 'Success Percent', value: 'success_percent' },
+        { text: 'Actions', value: 'actions', sortable: false}
       ],
       sortBy: [
         'goal.name',
@@ -73,6 +70,11 @@ export default {
     ...mapGetters({
       broadcastEvents: 'getBroadcastEvents',
     }),
+  },
+  methods: {
+    viewDetail(id) {
+      this.$router.push(`/analytics/${id}/`)
+    }
   },
   created() {
     this.isLoading = true
