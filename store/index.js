@@ -44,6 +44,15 @@ const actions = {
           })
             .then((response) => {
               if (response.data.count > 0) {
+                response.data.results.map((result) => {
+                  let raw_date_obj = new Date(result.schedule_time)
+                  result['details'] = result.content
+                  result['start'] = `${raw_date_obj.getFullYear()}-${
+                    raw_date_obj.getMonth() < 10
+                      ? '0' + raw_date_obj.getMonth()
+                      : raw_date_obj.getMonth()
+                  }-${raw_date_obj.getDate()}`
+                })
                 commit('FETCH_BROADCAST_EVENTS', response.data.results)
                 resolve(response.data.results)
               }
@@ -121,6 +130,15 @@ const actions = {
             method: 'GET',
           })
             .then((response) => {
+              response.data.results.map((result) => {
+                let raw_date_obj = new Date(result.schedule_time)
+                result['details'] = result.content
+                result['start'] = `${raw_date_obj.getFullYear()}-${
+                  raw_date_obj.getMonth() < 10
+                    ? '0' + raw_date_obj.getMonth()
+                    : raw_date_obj.getMonth()
+                }-${raw_date_obj.getDate()}`
+              })
               commit('FETCH_BROADCAST_EVENTS', response.data.results)
               resolve(response.data.results)
             })
@@ -173,11 +191,13 @@ const actions = {
         .catch((err) => reject(err))
     })
   },
-  fetchContacts({ commit }, tag=null) {
+  fetchContacts({ commit }, tag = null) {
     console.log('--- FETCHING CONTACTS (10 at a time) --- ')
     new Promise((resolve, reject) => {
       axios({
-        url: `${process.env.baseUrl}/core/contact/?size=10&tag=${tag ? tag : ''}`,
+        url: `${process.env.baseUrl}/core/contact/?size=10&tag=${
+          tag ? tag : ''
+        }`,
         method: 'GET',
       })
         .then((response) => {
@@ -222,7 +242,7 @@ const actions = {
         url: `${process.env.baseUrl}/core/broadcast-event/update/${eventId}/`,
         method: 'GET',
       })
-        .then(() => {
+        .then((response) => {
           commit('FETCH_SINGLE_BROADCAST_EVENT', response.data)
           resolve(response.data)
         })
@@ -243,6 +263,7 @@ const mutations = {
     state.templates = templates
   },
   FETCH_GOALS(state, goals) {
+    console.log(goals)
     state.goals = goals
   },
   FETCH_USER_COHORTS(state, cohorts) {
@@ -259,7 +280,7 @@ const mutations = {
   },
   FETCH_CONTACT_TAGS(state, contactTags) {
     state.contactTags = contactTags
-  }
+  },
 }
 
 export default {
