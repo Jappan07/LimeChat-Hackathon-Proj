@@ -50,6 +50,18 @@ export default {
           to: '/analytics',
           icon: 'mdi-chart-areaspline',
         },
+
+        {
+          title: 'Audience',
+          to: '/audience',
+          icon: 'mdi-account-convert',
+        },
+
+        {
+          title: 'Contacts',
+          to: '/contacts',
+          icon: 'mdi-account',
+        },
       ],
       miniVariant: false,
       right: true,

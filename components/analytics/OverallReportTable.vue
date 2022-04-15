@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card outlined flat rounded="0" class="mb-4">
     <v-card-title>
       Broadcast Events
       <v-spacer></v-spacer>
