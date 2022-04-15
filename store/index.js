@@ -10,6 +10,7 @@ const state = {
   goals: [],
   cohorts: [],
   analytics: {},
+  currentBrdEvent: {},
 }
 
 // Getters
@@ -19,6 +20,7 @@ const getters = {
   getGoals: (state) => state.goals,
   getUserCohorts: (state) => state.cohorts,
   getAnalytics: (state) => state.analytics,
+  getCurrentBrdEvent: (state) => state.currentBrdEvent
 }
 
 // Actions
@@ -183,6 +185,22 @@ const actions = {
         .catch((err) => reject(err))
     })
   },
+  fetchSingleBroadcastEvent({ commit }, eventId) {
+    console.log('FETCHING SINGLE BROADCAST EVENT --- ')
+    new Promise((resolve, reject) => {
+      axios({
+        url: `${process.env.baseUrl}/core/broadcast-event/update/${eventId}/`,
+        method: 'GET',
+      })
+        .then(() => {
+          commit('FETCH_SINGLE_BROADCAST_EVENT', response.data)
+          resolve(response.data)
+        })
+        .catch((err) => {
+          reject(err)
+        })
+    })
+  },
 }
 
 // Mutations
@@ -203,6 +221,9 @@ const mutations = {
   FETCH_ANALYTICS(state, analytics) {
     state.analytics = analytics
   },
+  FETCH_SINGLE_BROADCAST_EVENT(state, brdEvent) {
+    state.currentBrdEvent = brdEvent
+  }
 }
 
 export default {
