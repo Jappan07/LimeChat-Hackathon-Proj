@@ -54,6 +54,12 @@ export default {
         {
           title: 'Audience',
           to: '/audience',
+          icon: 'mdi-account-convert',
+        },
+
+        {
+          title: 'Contacts',
+          to: '/contacts',
           icon: 'mdi-account',
         },
       ],

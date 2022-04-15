@@ -1,13 +1,9 @@
 <template>
   <v-app>
-      <v-row justify="center" wrap>
-      <v-col cols="12" md="4" lg="4">
-      </v-col>
-      <v-divider vertical></v-divider>
-      <v-col cols="12" md="8" lg="8">
+    <v-row justify="center" wrap>
+      <v-col cols="11">
         <p class="headline mb-3 mt-3">Audiences</p>
-        <v-divider>
-        </v-divider>
+        <v-divider> </v-divider>
         <audience-table />
       </v-col>
     </v-row>

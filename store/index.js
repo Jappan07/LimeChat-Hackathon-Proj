@@ -11,6 +11,8 @@ const state = {
   cohorts: [],
   analytics: {},
   currentBrdEvent: {},
+  contacts: [],
+  contactTags: [],
 }
 
 // Getters
@@ -20,7 +22,9 @@ const getters = {
   getGoals: (state) => state.goals,
   getUserCohorts: (state) => state.cohorts,
   getAnalytics: (state) => state.analytics,
-  getCurrentBrdEvent: (state) => state.currentBrdEvent
+  getCurrentBrdEvent: (state) => state.currentBrdEvent,
+  getContacts: (state) => state.contacts,
+  getContactTags: (state) => state.contactTags,
 }
 
 // Actions
@@ -171,6 +175,34 @@ const actions = {
         .catch((err) => reject(err))
     })
   },
+  fetchContacts({ commit }, tag=null) {
+    console.log('--- FETCHING CONTACTS (10 at a time) --- ')
+    new Promise((resolve, reject) => {
+      axios({
+        url: `${process.env.baseUrl}/core/contact/?size=10&tag=${tag ? tag : ''}`,
+        method: 'GET',
+      })
+        .then((response) => {
+          commit('FETCH_CONTACTS', response.data.results)
+          resolve(response.data.results)
+        })
+        .catch((err) => reject(err))
+    })
+  },
+  fetchContactTags({ commit }) {
+    console.log('--- FETCHING CONTACT TAGS (10 at a time) --- ')
+    new Promise((resolve, reject) => {
+      axios({
+        url: `${process.env.baseUrl}/core/contact-tag/?size=10`,
+        method: 'GET',
+      })
+        .then((response) => {
+          commit('FETCH_CONTACT_TAGS', response.data.results)
+          resolve(response.data.results)
+        })
+        .catch((err) => reject(err))
+    })
+  },
   fetchAnalytics({ commit }) {
     console.log('--- FETCHING ANALYTICS --- ')
     new Promise((resolve, reject) => {
@@ -223,6 +255,12 @@ const mutations = {
   },
   FETCH_SINGLE_BROADCAST_EVENT(state, brdEvent) {
     state.currentBrdEvent = brdEvent
+  },
+  FETCH_CONTACTS(state, contacts) {
+    state.contacts = contacts
+  },
+  FETCH_CONTACT_TAGS(state, contactTags) {
+    state.contactTags = contactTags
   }
 }
 
