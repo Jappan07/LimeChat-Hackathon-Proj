@@ -17,10 +17,10 @@
         </v-container>
       </v-img>
     </v-card>
-    <v-card-text class="py-0" v-if="broadcastEvents.length > 0 && !isLoading">
-      <v-timeline align-top dense style="overflow-y: scroll; max-height: 520px">
+    <v-card-text class="py-0" v-if="broadcastEvents.length > 0 && !isLoading" style="overflow-y: scroll; max-height: 520px">
+      <v-timeline align-top dense >
         <v-timeline-item
-          :color="item.goal.name === 'Awareness' ? `pink` : `teal lighten-3`"
+          :color="item.color"
           class="px-3"
           small
           v-for="item in broadcastEvents"

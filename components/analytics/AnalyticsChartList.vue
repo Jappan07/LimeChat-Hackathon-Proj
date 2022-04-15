@@ -1,10 +1,7 @@
 <template>
   <v-row justify="space-around" class="mb-5 mt-5 pa-3" wrap>
     <v-col cols="12">
-      <v-row wrap>
-        <v-btn small @click="fill = !fill">{{
-        fill ? `Filled View` : `Basic View`
-      }}</v-btn>
+
       <v-alert
       outlined
       class="ml-3"
@@ -13,7 +10,6 @@
     >
       These metrics depict the visual representation of data related to last broadcast events.
     </v-alert>
-      </v-row>
     </v-col>
     <v-col cols="3" v-for="item in chartsList" :key="item.value">
       <v-card class="pa-4 mx-auto text-center">

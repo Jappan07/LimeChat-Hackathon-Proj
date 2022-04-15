@@ -50,6 +50,12 @@ export default {
           to: '/analytics',
           icon: 'mdi-chart-areaspline',
         },
+
+        {
+          title: 'Audience',
+          to: '/audience',
+          icon: 'mdi-account',
+        },
       ],
       miniVariant: false,
       right: true,
