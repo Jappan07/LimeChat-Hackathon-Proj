@@ -3,16 +3,29 @@
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat>
-          <v-btn color="primary" class="mr-4" @click="dialog = true" dark>
+          <v-btn
+            depressed
+            color="primary"
+            class="mr-4"
+            @click="openDialog"
+            dark
+          >
             New Event
           </v-btn>
-          <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
+          <v-btn
+            depressed
+            outlined
+            class="mr-4"
+            color="grey darken-2"
+            @click="setToday"
+          >
             Today
           </v-btn>
-          <v-btn fab text small color="grey darken-2" @click="prev">
+          <v-btn depressed fab text small color="grey darken-2" @click="prev">
             <v-icon small> mdi-chevron-left </v-icon>
           </v-btn>
           <v-btn
+            depressed
             fab
             text
             small
@@ -28,7 +41,13 @@
           <v-spacer></v-spacer>
           <v-menu bottom right>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn outlined color="grey darken-2" v-bind="attrs" v-on="on">
+              <v-btn
+                depressed
+                outlined
+                color="grey darken-2"
+                v-bind="attrs"
+                v-on="on"
+              >
                 <span>{{ typeToLabel[type] }}</span>
                 <v-icon right> mdi-menu-down </v-icon>
               </v-btn>
@@ -50,7 +69,7 @@
           </v-menu>
         </v-toolbar>
         <!-- add modal -->
-        <v-row justify="center">
+        <v-row v-if="!currentlyEditing" justify="center">
           <v-dialog
             v-model="dialog"
             fullscreen
@@ -59,13 +78,13 @@
           >
             <v-card>
               <v-toolbar dark color="primary">
-                <v-btn icon dark @click="dialog = false">
+                <v-btn depressed icon dark @click="dialog = false">
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
                 <v-toolbar-title>Create an Event</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
-                  <v-btn dark text @click="addEvent">
+                  <v-btn depressed dark text @click="addEvent">
                     SCHEDULE BROADCAST
                   </v-btn>
                 </v-toolbar-items>
@@ -123,6 +142,7 @@
                       >
                         <v-spacer></v-spacer>
                         <v-btn
+                          depressed
                           text
                           color="primary"
                           @click="timePickerDialog = false"
@@ -130,6 +150,7 @@
                           Cancel
                         </v-btn>
                         <v-btn
+                          depressed
                           text
                           color="primary"
                           @click="$refs.dialog.save(time)"
@@ -156,6 +177,7 @@
                 </v-container>
               </v-list>
               <v-divider></v-divider>
+              <!-- choose template -->
               <v-list>
                 <v-container>
                   <br />
@@ -164,17 +186,32 @@
                   <v-list class="template-selector-box" two-line>
                     <template v-for="(template, index) in templates">
                       <v-list-item
-                        @click="handleSelectedTemplate"
-                        :key="template"
+                        @click="handleSelectedTemplate(template.id)"
+                        :key="template.id"
                         :class="
-                          selectedTemplate === template ? 'pink--text' : null
+                          selectedTemplateId === template.id
+                            ? 'pink--text'
+                            : null
                         "
                       >
                         <v-list-item-content>
                           <v-list-item-title
-                            v-text="template"
+                            v-text="template.name"
                           ></v-list-item-title>
+                          <v-list-item-subtitle
+                            class="text--primary"
+                            v-text="template.content"
+                          ></v-list-item-subtitle>
                         </v-list-item-content>
+                        <v-list-item-content>
+                          <v-list-item-subtitle
+                            class="text--primary"
+                            v-text="template.short_code"
+                          ></v-list-item-subtitle>
+                        </v-list-item-content>
+                        <v-list-item-action-text
+                          v-text="template.service_temp_id"
+                        ></v-list-item-action-text>
                       </v-list-item>
                       <v-divider
                         v-if="index < templates.length - 1"
@@ -186,12 +223,188 @@
               </v-list>
               <br />
               <v-divider></v-divider>
+              <!-- choose audience -->
               <v-list>
                 <v-container>
                   <br />
                   <h3>Audience</h3>
                   <br />
                 </v-container>
+              </v-list>
+            </v-card>
+          </v-dialog>
+        </v-row>
+        <v-row v-else justify="center">
+          <v-dialog
+            v-model="dialog"
+            fullscreen
+            hide-overlay
+            transition="dialog-bottom-transition"
+          >
+            <v-card>
+              <v-toolbar dark :color="selectedEvent.color">
+                <v-btn depressed icon dark @click="dialog = false">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+                <v-toolbar-title>Edit Event</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-toolbar-items>
+                  <v-btn depressed dark text @click="updateEvent">
+                    UPDATE EVENT
+                  </v-btn>
+                </v-toolbar-items>
+              </v-toolbar>
+              <v-list three-line subheader>
+                <v-container>
+                  <br />
+                  <h3>Edit Broadcast Details</h3>
+                  <br />
+                  <v-form>
+                    <v-text-field
+                      v-model="name"
+                      type="text"
+                      label="Event Name (required)"
+                      outlined
+                      dense
+                    ></v-text-field>
+                    <v-text-field
+                      v-model="description"
+                      type="text"
+                      label="Description"
+                      outlined
+                      dense
+                    ></v-text-field>
+                    <v-text-field
+                      v-model="start"
+                      type="date"
+                      label="Start (required)"
+                      outlined
+                      dense
+                    ></v-text-field>
+                    <!-- time picker -->
+                    <v-dialog
+                      ref="dialog"
+                      v-model="timePickerDialog"
+                      :return-value.sync="time"
+                      persistent
+                      width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="time"
+                          label="Pick a time"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          outlined
+                          dense
+                        ></v-text-field>
+                      </template>
+                      <v-time-picker
+                        v-if="timePickerDialog"
+                        v-model="time"
+                        full-width
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          depressed
+                          text
+                          color="primary"
+                          @click="timePickerDialog = false"
+                        >
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          depressed
+                          text
+                          color="primary"
+                          @click="$refs.dialog.save(time)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-time-picker>
+                    </v-dialog>
+                    <v-text-field
+                      v-model="color"
+                      type="color"
+                      label="Color (click to open color menu)"
+                      outlined
+                      dense
+                    ></v-text-field>
+                    <v-select
+                      v-model="selectedGoal"
+                      :items="goals"
+                      label="Select your goal"
+                      dense
+                      outlined
+                    ></v-select>
+                  </v-form>
+                </v-container>
+              </v-list>
+              <v-divider></v-divider>
+              <!-- choose template -->
+              <v-list>
+                <v-container>
+                  <br />
+                  <h3>Choose a Template</h3>
+                  <br />
+                  <v-list class="template-selector-box" two-line>
+                    <template v-for="(template, index) in templates">
+                      <v-list-item
+                        @click="handleSelectedTemplate(template.id)"
+                        :key="template.id"
+                        :class="
+                          selectedTemplateId === template.id
+                            ? 'pink--text'
+                            : null
+                        "
+                      >
+                        <v-list-item-content>
+                          <v-list-item-title
+                            v-text="template.name"
+                          ></v-list-item-title>
+                          <v-list-item-subtitle
+                            class="text--primary"
+                            v-text="template.content"
+                          ></v-list-item-subtitle>
+                        </v-list-item-content>
+                        <v-list-item-content>
+                          <v-list-item-subtitle
+                            class="text--primary"
+                            v-text="template.short_code"
+                          ></v-list-item-subtitle>
+                        </v-list-item-content>
+                        <v-list-item-action-text
+                          v-text="template.service_temp_id"
+                        ></v-list-item-action-text>
+                      </v-list-item>
+                      <v-divider
+                        v-if="index < templates.length - 1"
+                        :key="index"
+                      ></v-divider>
+                    </template>
+                  </v-list>
+                </v-container>
+              </v-list>
+              <br />
+              <v-divider></v-divider>
+              <!-- choose audience -->
+              <v-list>
+                <v-container>
+                  <br />
+                  <h3>Audience</h3>
+                  <br />
+                </v-container>
+                <v-layout justify-center>
+                  <v-btn
+                    class="mb-8"
+                    depressed
+                    color="error"
+                    @click="deleteEvent(selectedEvent.id)"
+                  >
+                    Delete Event
+                  </v-btn>
+                </v-layout>
               </v-list>
             </v-card>
           </v-dialog>
@@ -218,7 +431,7 @@
         >
           <v-card color="grey lighten-4" min-width="350px" flat>
             <v-toolbar :color="selectedEvent.color" dark>
-              <v-btn icon @click="deleteEvent(selectedEvent.id)">
+              <v-btn depressed icon @click="deleteEvent(selectedEvent.id)">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
@@ -233,17 +446,28 @@
               </form>
             </v-card-text>
             <v-card-actions>
-              <v-btn text color="secondary" @click="selectedOpen = false">
+              <v-btn
+                depressed
+                text
+                color="secondary"
+                @click="selectedOpen = false"
+              >
                 Close
               </v-btn>
               <v-btn
+                depressed
                 text
                 v-if="currentlyEditing !== selectedEvent.id"
                 @click.prevent="editEvent(selectedEvent)"
               >
                 Edit
               </v-btn>
-              <v-btn text v-else @click.prevent="updateEvent(selectedEvent)">
+              <v-btn
+                depressed
+                text
+                v-else
+                @click.prevent="updateEvent(selectedEvent)"
+              >
                 Save
               </v-btn>
             </v-card-actions>
@@ -260,6 +484,7 @@ import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
+      isNewEvent: false,
       today: new Date().toISOString().substr(0, 10),
       focus: new Date().toISOString().substr(0, 10),
       type: 'month',
@@ -273,7 +498,7 @@ export default {
       description: null,
       start: null,
       end: null,
-      color: '#1976D2', // default event color
+      color: '#1976D2',
       currentlyEditing: null,
       selectedEvent: {},
       selectedElement: null,
@@ -285,20 +510,14 @@ export default {
       selectedGoal: 'Awareness',
       goals: ['Awareness', 'Sales'],
       time: '',
-      templates: [
-        'woifbnwioufbfbwfwf',
-        'jawhfowiuefnwoff',
-        'wfkhbweaifuwab',
-        'woifbnwioufbfbwfwfd',
-        'woifbnwioufbfbwfwfw',
-        'woifbnwioufbfbwfwfr',
-      ],
       selectedTemplate: '',
+      selectedTemplateId: '',
     }
   },
   computed: {
     ...mapGetters({
       broadcastEvents: 'getBroadcastEvents',
+      templates: 'getTemplates',
     }),
     title() {
       const { start, end } = this
@@ -332,64 +551,19 @@ export default {
     },
   },
   mounted() {
-    // this.$store
-    //   .dispatch('fetchBroadcastEvents')
-    //   .then((resp) => console.log(this.broadcastEvents))
-    this.getBroadcastEvents()
+    // this.getBroadcastEvents()
+    this.getTemplates()
   },
   methods: {
+    async getTemplates() {
+      this.$store
+        .dispatch('fetchTemplates')
+        .then((resp) => console.log(this.data_templates))
+    },
     async getBroadcastEvents() {
       this.$store
         .dispatch('fetchBroadcastEvents')
         .then((resp) => console.log(this.broadcastEvents))
-      //   axios.get('').then((response) => response.data)
-      //   this.events.push(data)
-      this.events = [
-        {
-          id: 1,
-          color: '#1976D2',
-          details: 'some description',
-          start: '2022-04-25',
-          name: 'Some Title',
-        },
-        {
-          id: 2,
-          color: '#000',
-          details: 'some description',
-          start: '2022-04-25',
-          end: '2022-04-25',
-          name: 'Some Title',
-        },
-        {
-          id: 3,
-          color: '#c00c00',
-          details: 'some description',
-          start: '2022-04-26',
-          end: '2022-04-26',
-          name: 'Some Title',
-        },
-        {
-          id: 4,
-          color: '#c00c00',
-          details: 'some description',
-          start: '2022-04-04',
-          name: 'Some Title',
-        },
-        {
-          id: 4,
-          color: '#efdefe',
-          details: 'some description',
-          start: '2022-04-11',
-          name: 'Some Title',
-        },
-        {
-          id: 2,
-          color: '#1976D2',
-          details: 'some description',
-          start: '2022-03-25',
-          name: 'Some Title',
-        },
-      ]
     },
     async addEvent() {
       if (this.name && this.start) {
@@ -402,7 +576,6 @@ export default {
           template: 1,
           schedule_time: this.start,
         }
-        console.log(this.name, this.color, this.description, this.selectedGoal)
 
         //   post request
         this.$store
@@ -437,8 +610,13 @@ export default {
       this.selectedOpen = false
       this.getBroadcastEvents()
     },
-    handleSelectedTemplate(e) {
-      this.selectedTemplate = e.target.innerText
+    openDialog() {
+      this.currentlyEditing = false
+      this.dialog = true
+    },
+    handleSelectedTemplate(templateId) {
+      console.log(templateId)
+      this.selectedTemplateId = templateId
     },
     toggleInput(selected, current) {
       if (selected.includes(current)) {
@@ -467,11 +645,12 @@ export default {
       this.currentlyEditing = e.id
     },
     showEvent({ nativeEvent, event }) {
+      this.currentlyEditing = true
       const open = () => {
         this.selectedEvent = event
         this.selectedElement = nativeEvent.target
         requestAnimationFrame(() =>
-          requestAnimationFrame(() => (this.selectedOpen = true))
+          requestAnimationFrame(() => (this.dialog = true))
         )
       }
 

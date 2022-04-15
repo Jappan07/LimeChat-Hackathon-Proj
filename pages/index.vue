@@ -1,10 +1,11 @@
 <template>
   <v-app>
-      <v-row justify="center" wrap>
+    <v-spacer></v-spacer>
+    <v-row justify="center" wrap>
       <v-col cols="12" md="4" lg="4">
         <upcoming-events />
       </v-col>
-      <v-col cols="12" md="8" lg="8">
+      <v-col cols="12" md="7" lg="7">
         <p class="headline mb-3 mt-3">Schedule Event</p>
         <calendar />
       </v-col>
