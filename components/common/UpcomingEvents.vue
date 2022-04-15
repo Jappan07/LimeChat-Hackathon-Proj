@@ -21,6 +21,7 @@
       <v-timeline align-top dense style="overflow-y: scroll; max-height: 520px">
         <v-timeline-item
           :color="item.goal.name === 'Awareness' ? `pink` : `teal lighten-3`"
+          class="px-3"
           small
           v-for="item in broadcastEvents"
           :key="item.id"
