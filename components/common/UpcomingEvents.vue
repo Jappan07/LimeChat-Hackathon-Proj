@@ -1,11 +1,12 @@
 <template>
-  <v-card class="mx-auto">
+  <v-card class="mx-auto" flat outlined rounded="0">
     <v-card dark flat>
-      <v-btn absolute bottom color="pink" right fab>
+      <!-- <v-btn absolute bottom color="pink" right fab>
         <v-icon>mdi-plus</v-icon>
-      </v-btn>
+      </v-btn> -->
       <v-img
         src="https://cdn.vuetifyjs.com/images/cards/forest.jpg"
+        height="200px"
         gradient="to top, rgba(0,0,0,.44), rgba(0,0,0,.44)"
       >
         <v-container class="fill-height">
@@ -17,7 +18,7 @@
       </v-img>
     </v-card>
     <v-card-text class="py-0" v-if="broadcastEvents.length > 0 && !isLoading">
-      <v-timeline align-top dense>
+      <v-timeline align-top dense style="overflow-y: scroll; max-height: 520px">
         <v-timeline-item
           :color="item.goal.name === 'Awareness' ? `pink` : `teal lighten-3`"
           small
