@@ -8,6 +8,7 @@ const state = {
   broadcastEvents: [],
   templates: [],
   goals: [],
+  cohorts: [],
 }
 
 // Getters
@@ -15,6 +16,7 @@ const getters = {
   getBroadcastEvents: (state) => state.broadcastEvents,
   getTemplates: (state) => state.templates,
   getGoals: (state) => state.goals,
+  getUserCohorts: (state) => state.cohorts,
 }
 
 // Actions
@@ -55,6 +57,16 @@ const actions = {
         method: 'GET',
       })
         .then((response) => {
+          // new Date(Date.parse(schedule_time))
+          response.data.results.map((result) => {
+            let raw_date_obj = new Date(result.schedule_time)
+            result['details'] = result.content
+            result['start'] = `${raw_date_obj.getFullYear()}-${
+              raw_date_obj.getMonth() < 10
+                ? '0' + raw_date_obj.getMonth()
+                : raw_date_obj.getMonth()
+            }-${raw_date_obj.getDate()}`
+          })
           commit('FETCH_BROADCAST_EVENTS', response.data.results)
           resolve(response.data.results)
         })

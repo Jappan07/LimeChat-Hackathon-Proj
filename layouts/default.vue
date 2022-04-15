@@ -61,7 +61,7 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Outbound Planner',
+      title: 'Outbound Planner - A Broadcast Message Scheduler',
     }
   },
 }

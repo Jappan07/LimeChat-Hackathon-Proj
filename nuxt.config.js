@@ -9,8 +9,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - hack-limeChat',
-    title: 'hack-limeChat',
+    title: 'Outbound Planner',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -46,21 +45,20 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: 'https://limeplanner.herokuapp.com' // Use it like axios.defaults.baseURL
+    baseURL: 'https://limeplanner.herokuapp.com', // Use it like axios.defaults.baseURL
   },
 
   publicRuntimeConfig: {
     axios: {
-      browserBaseURL: 'https://limeplanner.herokuapp.com'
-    }
+      browserBaseURL: 'https://limeplanner.herokuapp.com',
+    },
   },
 
   privateRuntimeConfig: {
     axios: {
-      baseURL: 'https://limeplanner.herokuapp.com'
-    }
+      baseURL: 'https://limeplanner.herokuapp.com',
+    },
   },
-
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
