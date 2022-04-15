@@ -5,6 +5,7 @@
         <upcoming-events />
       </v-col>
       <v-col cols="12" md="8" lg="8">
+        <p class="headline mb-3 mt-3">Schedule Event</p>
         <calendar />
       </v-col>
     </v-row>

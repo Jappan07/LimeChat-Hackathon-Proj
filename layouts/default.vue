@@ -50,9 +50,9 @@ export default {
           icon: 'mdi-home'
         },
         {
-          title: 'Cohorts',
-          to: '/cohorts',
-          icon: 'mdi-account'
+          title: 'Analytics',
+          to: '/analytics',
+          icon: 'mdi-chart-areaspline'
         },
       ],
       miniVariant: false,
