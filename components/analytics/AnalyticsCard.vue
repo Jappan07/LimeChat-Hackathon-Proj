@@ -180,7 +180,7 @@ export default {
           value: 'success_percent',
         },
         {
-          title: 'Conversion Rates',
+          title: 'Click Rates',
           value: 'conversion_rate',
         },
         {
