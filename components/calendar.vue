@@ -66,7 +66,7 @@
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
                   <v-btn dark text @click="addEvent">
-                    INITIATE BROADCAST
+                    SCHEDULE BROADCAST
                   </v-btn>
                 </v-toolbar-items>
               </v-toolbar>
@@ -380,6 +380,13 @@ export default {
           color: '#efdefe',
           details: 'some description',
           start: '2022-04-11',
+          name: 'Some Title',
+        },
+        {
+          id: 2,
+          color: '#1976D2',
+          details: 'some description',
+          start: '2022-03-25',
           name: 'Some Title',
         },
       ]

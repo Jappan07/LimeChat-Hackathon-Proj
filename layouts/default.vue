@@ -1,12 +1,6 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      app
-    >
+    <v-navigation-drawer mini-variant fixed app>
       <v-list>
         <v-list-item
           v-for="(item, i) in items"
@@ -25,14 +19,11 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed elevation="0" app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
       <v-spacer />
     </v-app-bar>
     <v-main>
-      <v-container>
-        <Nuxt />
-      </v-container>
+      <Nuxt />
     </v-main>
     <v-footer :absolute="!fixed" app>
       <span>limeChat @{{ new Date().getFullYear() }}</span>
@@ -52,16 +43,18 @@ export default {
         {
           title: 'Plan Now',
           to: '/',
+          icon: 'mdi-home',
         },
         {
-          title: 'Cohorts',
-          to: '/cohorts',
+          title: 'Analytics',
+          to: '/analytics',
+          icon: 'mdi-chart-areaspline',
         },
       ],
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Outbound Planner - A Broadcast Message Scheduler',
+      title: 'Lime Planner',
     }
   },
 }

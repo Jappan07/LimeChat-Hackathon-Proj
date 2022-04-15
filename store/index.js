@@ -9,6 +9,7 @@ const state = {
   templates: [],
   goals: [],
   cohorts: [],
+  analytics: {},
 }
 
 // Getters
@@ -17,6 +18,7 @@ const getters = {
   getTemplates: (state) => state.templates,
   getGoals: (state) => state.goals,
   getUserCohorts: (state) => state.cohorts,
+  getAnalytics: (state) => state.analytics,
 }
 
 // Actions
@@ -66,6 +68,7 @@ const actions = {
                 ? '0' + raw_date_obj.getMonth()
                 : raw_date_obj.getMonth()
             }-${raw_date_obj.getDate()}`
+            // console.log(result)
           })
           commit('FETCH_BROADCAST_EVENTS', response.data.results)
           resolve(response.data.results)
@@ -166,11 +169,26 @@ const actions = {
         .catch((err) => reject(err))
     })
   },
+  fetchAnalytics({ commit }) {
+    console.log('--- FETCHING ANALYTICS --- ')
+    new Promise((resolve, reject) => {
+      axios({
+        url: `${process.env.baseUrl}/core/analytics/`,
+        method: 'GET',
+      })
+        .then((response) => {
+          commit('FETCH_ANALYTICS', response.data)
+          resolve(response.data)
+        })
+        .catch((err) => reject(err))
+    })
+  },
 }
 
 // Mutations
 const mutations = {
   FETCH_BROADCAST_EVENTS(state, broadcastEvents) {
+    console.log(broadcastEvents)
     state.broadcastEvents = broadcastEvents
   },
   FETCH_TEMPLATES(state, templates) {
@@ -181,6 +199,9 @@ const mutations = {
   },
   FETCH_USER_COHORTS(state, cohorts) {
     state.cohorts = cohorts
+  },
+  FETCH_ANALYTICS(state, analytics) {
+    state.analytics = analytics
   },
 }
 
