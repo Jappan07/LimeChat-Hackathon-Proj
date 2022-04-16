@@ -80,7 +80,7 @@
           <event-edit-form
             :dialog="dialog"
             :color="selectedEvent.color"
-            :selected-event-id="selectedEvent.id"
+            :selected-event="selectedEvent"
             @toggleDialog="dialog = !dialog"
             @getBroadcastEvents="getBroadcastEvents()"
           />

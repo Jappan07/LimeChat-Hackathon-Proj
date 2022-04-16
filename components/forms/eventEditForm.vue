@@ -25,21 +25,21 @@
           <br />
           <v-form>
             <v-text-field
-              v-model="name"
+              v-model="selectedEvent.name"
               type="text"
               label="Event Name (required)"
               outlined
               dense
             ></v-text-field>
             <v-text-field
-              v-model="description"
+              v-model="selectedEvent.content"
               type="text"
               label="Description"
               outlined
               dense
             ></v-text-field>
             <v-text-field
-              v-model="start"
+              v-model="selectedEvent.start"
               type="date"
               label="Start (required)"
               outlined
@@ -85,14 +85,14 @@
               </v-time-picker>
             </v-dialog>
             <v-text-field
-              v-model="color"
+              v-model="selectedEvent.color"
               type="color"
               label="Color (click to open color menu)"
               outlined
               dense
             ></v-text-field>
             <v-select
-              v-model="selectedGoal"
+              v-model="selectedEvent.selectedGoal"
               :items="goals"
               item-text="name"
               item-value="id"
@@ -116,7 +116,7 @@
                 @click="handleSelectedTemplate(template.id)"
                 :key="template.id"
                 :class="
-                  selectedTemplateId === template.id ? 'pink--text' : null
+                  selectedEvent.template.id === template.id ? 'pink--text' : null
                 "
               >
                 <v-list-item-content>
@@ -153,7 +153,7 @@
           <h3>Audience</h3>
           <br />
           <v-list class="template-selector-box" two-line>
-            <template v-for="(cohort, index) in audience">
+            <template v-for="(cohort, index) in audiences">
               <v-list-item
                 @click="handleSelectedCohort(cohort.id)"
                 :key="cohort.id"
@@ -198,6 +198,7 @@
   </v-dialog>
 </template>
 <script>
+import axios from 'axios'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -207,9 +208,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    selectedEventId: {
-      type: Number,
-      required: true
+    selectedEvent: {
+      type: Object,
+      required: true,
     },
   },
   data() {
@@ -222,6 +223,7 @@ export default {
       selectedGoal: '',
       selectedTemplateId: '',
       selectedCohortId: '',
+      currentEventData: {},
     }
   },
   computed: {
@@ -229,11 +231,12 @@ export default {
       templates: 'getTemplates',
       goals: 'getGoals',
       audience: 'getUserCohorts',
-      currentEventData: 'getCurrentBrdEvent',
     }),
   },
-  mounted() {
-    this.$store.dispatch('fetchSingleBroadcastEvent', this.selectedEventId).then(() => this.assignValues())
+  created() {
+    console.log(this.selectedEventId);
+    this.fetchSingleBroadcastEvent(this.selectedEventId)
+    this.assignValues()
   },
   methods: {
     async deleteEvent(e) {
@@ -243,19 +246,46 @@ export default {
       this.$emit('getBroadcastEvents')
       this.$emit('toggleDialog')
     },
+    fetchSingleBroadcastEvent(eventId) {
+      console.log('This is coming')
+      axios({
+        url: `${process.env.baseUrl}/core/broadcast-event/update/${eventId}/`,
+        method: 'GET',
+      })
+        .then((response) => {
+          this.name = response.data.name
+          this.description = response.data.content
+          this.start = response.data.start
+          this.selectedGoal = response.data.goal
+          this.selectedTemplateId = response.data.template
+            ? response.data.template.id
+            : null
+          this.selectedCohortId = response.data.cohort
+            ? response.data.cohort.id
+            : null
+          this.currentEventData = response.data
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
     handleSelectedTemplate(templateId) {
       this.selectedTemplateId = templateId
     },
     handleSelectedCohort(cohortId) {
       this.selectedCohortId = cohortId
     },
-    assignValues(){
+    assignValues() {
       this.name = this.currentEventData.name
       this.description = this.currentEventData.content
       this.start = this.currentEventData.start
       this.selectedGoal = this.currentEventData.goal
-      this.selectedTemplateId = this.currentEventData.template ? this.currentEventData.template.id : null
-      this.selectedCohortId = this.currentEventData.cohort ? this.currentEventData.cohort.id : null
+      this.selectedTemplateId = this.currentEventData.template
+        ? this.currentEventData.template.id
+        : null
+      this.selectedCohortId = this.currentEventData.cohort
+        ? this.currentEventData.cohort.id
+        : null
     },
     updateEvent() {
       console.log(
